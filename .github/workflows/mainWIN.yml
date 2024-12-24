@@ -28,13 +28,13 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --onefile copypa.py
+        pyinstaller --onefile copypaWIN.py
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: built-executable
-        path: dist/copypa.exe
+        path: dist/copypaWIN.exe
 
   run:
     needs: build
@@ -52,4 +52,4 @@ jobs:
 
     - name: Run built executable
       run: |
-        dist\copypa.exe
+        dist\copypaWIN.exe
