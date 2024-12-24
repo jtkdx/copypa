@@ -1,6 +1,6 @@
 import pyperclip
 from openpyxl import Workbook, load_workbook
-import pyautogui
+import keyboard
 import time
 
 # 既存のExcelファイルを読み込むか、新規作成
@@ -20,19 +20,8 @@ previous_clipboard_content = pyperclip.paste()
 def save_to_excel(text):
     row_data = text.split('\t')  # タブ区切りで分割
     ws.append(row_data)
-    print(f'Text copied to Excel: {text}')
-
-def paste_to_excel():
-    # Excelがアクティブになっていることを確認
-    pyautogui.hotkey('alt', 'tab')
-    time.sleep(0.5)
-    
-    # クリップボードの内容をペースト
-    pyautogui.hotkey('ctrl', 'v')
-    time.sleep(0.5)
-    
-    # カーソルを1つ下に移動
-    pyautogui.press('down')
+    wb.save(file_path)
+    print(f'Text copied to Excel and saved to {file_path}')
 
 # クリップボードの監視ループ
 while True:
@@ -44,7 +33,6 @@ while True:
         if current_clipboard_content != previous_clipboard_content:
             previous_clipboard_content = current_clipboard_content
             save_to_excel(current_clipboard_content)
-            paste_to_excel()
         
         # CPU使用率を抑えるために少し待機
         time.sleep(1)
