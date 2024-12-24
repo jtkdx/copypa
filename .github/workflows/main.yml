@@ -1,4 +1,4 @@
-name: Run Python Script
+name: Build and Run Python Script
 
 on:
   push:
@@ -9,23 +9,47 @@ on:
       - main
 
 jobs:
-  run-script:
+  build:
     runs-on: macos-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyperclip openpyxl appscript
+        pip install pyperclip openpyxl appscript pyinstaller
 
-    - name: Run Python script
+    - name: Build with PyInstaller
       run: |
-        python copypa.py
+        pyinstaller --onefile copypa.py
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: built-executable
+        path: dist/copypa
+
+  run:
+    needs: build
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: built-executable
+        path: dist/
+
+    - name: Run built executable
+      run: |
+        ./dist/copypa
