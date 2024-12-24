@@ -18,8 +18,10 @@ except FileNotFoundError:
 previous_clipboard_content = pyperclip.paste()
 
 def save_to_excel(text):
-    row_data = text.split('\t')  # タブ区切りで分割
-    ws.append(row_data)
+    rows = text.split('\n')  # 改行で分割して行ごとに処理
+    for row in rows:
+        row_data = row.split('\t')  # タブ区切りでセルに分割
+        ws.append(row_data)
     wb.save(file_path)
     print(f'Text copied to Excel and saved to {file_path}')
 
